@@ -30,11 +30,16 @@
 	        <value>classpath:qqconnectconfig.properties</value>
 	
 	        <!-- 环境相关的配置文件-->
-	        <value>classpath:jdbc_${system_env}.properties</value>
+ 	   <!--     <value>classpath:jdbc_${system_env}.properties</value>
 	        <value>classpath:configuration_${system_env}.properties</value>
 
+	        <value>classpath:jdbc_${system_env}.properties</value>
+	        <value>classpath:configuration_${system_env}.properties</value>  -->
+	         <value>classpath:jdbc_local.properties</value>
+	        <value>classpath:configuration_local.properties</value>
+
 	        <value>classpath:jdbc_local.properties</value>
-	        <value>classpath:configuration_${system_env}.properties</value> 
+	        <value>classpath:configuration_local.properties</value> 
 	      </list>
 	    </property>
     </bean>

@@ -24,11 +24,14 @@ import com.social.util.WeChatDevUtils;
 public class SocialController extends BaseController {
 	private static Logger log = Logger.getLogger(SocialController.class);
 	
-	@RequestMapping("/index")
-	public String index() {
-		return "social/index";
+	
+	@RequestMapping("/home")
+	public String home() {
+		return "social/home";
 	}
 
+
+	
 	@RequestMapping("/weibo")
 	public void weibo() throws WeiboException, IOException {
 		updateProperties();
@@ -65,6 +68,8 @@ public class SocialController extends BaseController {
 		
 		return "";
 	}
+	
+
 	
 	private void updateProperties() {
 		WeiboConfig.updateProperties("client_ID", AppConfig.getProperty(Constans.WEIBO.SOCIAL_LOGIN_CLIENT_ID));
