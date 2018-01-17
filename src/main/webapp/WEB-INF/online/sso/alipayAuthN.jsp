@@ -46,10 +46,11 @@
 			</div>
 			<div class="list-group">
 				<div class="list-group-item" >
-	              <h4 class="list-group-item-heading">请在右边选择关联或注册 </h4>
+	              <h4 class="list-group-item-heading">自动注册企业账号并关联 </h4>
 	              <p class="list-group-item-text"></p>
             	</div>
 			</div>
+			
 		</div>
 		<div class="col-xs-12 col-sm-1 col-md-1"></div>
 		<div class="col-xs-12 col-sm-5 col-md-5">
@@ -63,10 +64,10 @@
 				</div>
 				<div class="bs-example bs-example-tabs" data-example-id="togglable-tabs">
 					    <ul class="nav nav-tabs" id="myTabs" role="tablist">
-					      <li class="active" role="presentation"><a id="home-tab" role="tab" aria-expanded="true" aria-controls="creat-acct" href="#creat-acct" data-toggle="tab">创建OAM账号</a></li>
-					      <li role="presentation"><a id="profile-tab" role="tab" aria-expanded="false" aria-controls="link-acct" href="#link-acct" data-toggle="tab">绑定OAM账号</a></li>
+					      <li id="list1" class="active" role="presentation"><a id="home-tab" role="tab" aria-expanded="true" aria-controls="creat-acct" href="#creat-acct" data-toggle="tab">创建OAM账号</a></li>
+					      <li id="list2" class="active" role="presentation"><a id="profile-tab" role="tab" aria-expanded="false" aria-controls="link-acct" href="#link-acct" data-toggle="tab">绑定OAM账号</a></li>
 					    </ul>
-					    <div class="tab-content" id="myTabContent">
+					    <div class="tab-conten" id="myTabContent">
 					      <div class="tab-pane fade active in" id="creat-acct" role="tabpanel" aria-labelledby="home-tab">
        				        	
 									<div class="form-group has-feedback">

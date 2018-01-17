@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:mvc="http://www.springframework.org/schema/mvc"
+		xmlns:ldap="http://www.springframework.org/schema/ldap"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+							http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
+                        	http://www.springframework.org/schema/context
+                        	http://www.springframework.org/schema/context/spring-context-3.1.xsd 
+                        	http://www.springframework.org/schema/tx 
+							http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+							http://www.springframework.org/schema/mvc  
+                        	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+                        	http://www.springframework.org/schema/ldap
+                        	http://www.springframework.org/schema/ldap/spring-ldap.xsd
+                        	">
+    <context:property-placeholder location="classpath:/ldap.properties" />
+ 
+	<mvc:annotation-driven/>  
+	
+	<bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+	        <property name="url" value="${ldap.oud.url}" />
+	        <property name="base" value="${ldap.oud.base}" />
+	        <property name="userDn" value="${ldap.oud.username}" />
+	        <property name="password" value="${ldap.oud.password}" />
+	</bean>
+	
+	<!--  配置LdapTemplate，类似于JDBCTemplete -->
+	
+ 	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate" >
+	        <constructor-arg>
+	            <ref bean="contextSource" />
+	        </constructor-arg>
+	 </bean>
+	
+	<!-- 配置一个dao -->
+	<bean id="ldapPersonDao" class="com.social.dao.impl.LdapPersonDaoImpl">
+	        <property name="ldapTemplate">
+	            <ref bean="ldapTemplate" />
+	        </property>
+	</bean>
+</beans>
