@@ -285,29 +285,48 @@ $('.container').find('input').eq(key).parent().parent().removeClass('has-success
 }
 });*/
 
+
+$(function() {
+	socialIDisExisted();
+/*		$.ajax({  
+	         type: "POST",  
+			 dataType: "json",//预期服务器返回的数据类型
+	       	 url:"../ldap/existSid",  
+	         data:{'sid':'123456789'},// 序列化表单值  getUrlPara(app_id)
+	         async: false,  
+	         error: function(request) {  
+	        	alert("Connection error"); 
+        	 },  
+	          success: function(data) {  
+				if(data){
+					socialIDisExisted();
+				}else{
+					socialIdisNotExisted();
+				}
+	     }  
+	   });  */  
+});
+/*alert("SUCCESS" + data /n+ result.resultCode);*/
+
+function socialIDisExisted(){
+	$('#list1').addClass("hide");
+	$('#list1').addClass("active");
+	$('#link-acct').addClass("active").addClass("in");
+	$('#creat-acct').addClass("hide");
+	
+	
+}
+
+function socialIdisNotExisted(){
+	alert(window.location.href);
+}
+
+
 $('#submit').click(function(e) {
 	$('#regfrom').submit();
 });
 
-	/*	$.ajax({  
-		         type: "POST",  
-				 dataType: "json",//预期服务器返回的数据类型
-		       	 url:"http://oam.oracledemo.com:14100/oam/server/auth_cred_submit",  
-		         data:$('#regform').serialize(),// 序列化表单值  
-		         async: false,  
-		         error: function(request) {  
-		        	alert("Connection error"); 
-		         	window.location.href="${ctx}/social/home" 	
-	         },  
-		          success: function(data) {  
-			        console.log(result);//打印服务端返回的数据(调试用)
-			        if (result.resultCode == 200) {
-			            alert("SUCCESS");
-			        	};
-			     	}  
-		   });  */
-
-
+	
 
 
 $('#reset').click(function() {
