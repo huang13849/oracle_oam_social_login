@@ -26,6 +26,12 @@ import com.social.domain.Person;
 
 
 public class LdapPersonDaoImpl implements LdapPersonDao {
+	private static final String LDAP_ATTR_SOCIAL_TYPE = "o";
+	private static final String LDAP_ATTR_ACCESS_TOKEN = "registeredAddress";
+	private static final String LDAP_ATTR_SURNAME = "sn";
+	private static final String LDAP_ATTR_COMMON_NAME = "cn";
+	private static final String LDAP_ATTR_USERNAME = "uid";
+	private static final String LDAP_ATTR_SOCIAL_ID = "st";
 	@Autowired
 	private LdapTemplate ldapTemplate;
 	private static final Logger log = LoggerFactory.getLogger(LdapPersonDaoImpl.class);
@@ -54,7 +60,7 @@ public class LdapPersonDaoImpl implements LdapPersonDao {
 				filter.encode(), new AttributesMapper() {
 			public Object mapFromAttributes(Attributes attrs)
 					throws NamingException {
-					return attrs.get("cn").get();
+					return attrs.get(LDAP_ATTR_USERNAME).get();
 					}}
 		);
 	}
@@ -75,12 +81,12 @@ public class LdapPersonDaoImpl implements LdapPersonDao {
 	}
 
 	private DistinguishedName buildDn(Person person) {
-		return buildDn(person.getCn());
+		return buildDn(person.getUsername());
 		}
 
 	private DistinguishedName buildDn(String cn) {
 		DistinguishedName dn = new DistinguishedName();
-		dn.add("cn", cn);
+		dn.add(LDAP_ATTR_USERNAME, cn);
 		if (log.isDebugEnabled())
 			log.debug("dn=" + dn.toString());
 		return dn;
@@ -96,21 +102,15 @@ public class LdapPersonDaoImpl implements LdapPersonDao {
 		return true;
 	}
 	
-	public boolean isUserSocialIdExist(String socialId) {
-		Boolean JsonReturn = false;
-		try {
+	public List findBySocialId(String socialId) {
+
 			AndFilter andFilter = new AndFilter();
-			EqualsFilter equalFilter1 = new EqualsFilter("o", socialId);
+			EqualsFilter equalFilter1 = new EqualsFilter(LDAP_ATTR_SOCIAL_ID, socialId);
 			EqualsFilter equalFilter2 = new EqualsFilter("objectClass", "person");
 			andFilter.and(equalFilter1).and(equalFilter2);			
 			List resultList = ldapTemplate.search(DistinguishedName.EMPTY_PATH,andFilter.encode(), getContextMapper());
-			if(resultList.size()==1) {JsonReturn = Boolean.TRUE;}
 			
-		} catch (NameNotFoundException e) {
-			log.info(" isUserCnExist:" + e.getCause());
-			return false;
-		}
-		return JsonReturn;
+		return resultList;
 	}
 
 	/**
@@ -120,21 +120,21 @@ public class LdapPersonDaoImpl implements LdapPersonDao {
      * @param context
      */
 	private void mapToContext(Person person, DirContextAdapter context,boolean isCreate) {
-		context.setAttributeValues("objectclass", new String[] { "top","organizationalUnit" });
-		context.setAttributeValues("objectclass", new String[] { "organizationalPerson","inetOrgPerson" });
-		context.setAttributeValue("cn", person.getCn());
-		context.setAttributeValue("uid", person.getUid());
-		context.setAttributeValue("sn", person.getSn());
-		context.setAttributeValue("o", person.getSid());
-		context.setAttributeValue("registeredAddress", person.getAccessToken());
 		if (isCreate) {
+			context.setAttributeValues("objectclass", new String[] { "top","organizationalUnit" });
+			context.setAttributeValues("objectclass", new String[] { "organizationalPerson","inetOrgPerson" });
+			context.setAttributeValue(LDAP_ATTR_USERNAME, person.getUsername());
+			context.setAttributeValue(LDAP_ATTR_COMMON_NAME, person.getFirstname() + " " + person.getSurname());
+			context.setAttributeValue(LDAP_ATTR_SURNAME, person.getSurname());
+			context.setAttributeValue(LDAP_ATTR_SOCIAL_ID, person.getSocialId());
 			context.setAttributeValue("userPassword", person.getUserPassword());
+			context.setAttributeValues("mail", person.getMail());
+			context.setAttributeValue("mobile", person.getMobile());
+			context.setAttributeValue("sex", person.getSex());
+			context.setAttributeValue("age", person.getAge());
 		}
-		context.setAttributeValue("userType", person.getUserType());
-		context.setAttributeValues("mail", person.getMail());
-		context.setAttributeValue("mobile", person.getMobile());
-		context.setAttributeValue("sex", person.getSex());
-		context.setAttributeValue("age", person.getAge());
+		context.setAttributeValue(LDAP_ATTR_ACCESS_TOKEN, person.getSocialAccessToken());
+		context.setAttributeValue(LDAP_ATTR_SOCIAL_TYPE, person.getSocialType());
 	}
 
 	/**
@@ -146,15 +146,15 @@ public class LdapPersonDaoImpl implements LdapPersonDao {
 			DirContextAdapter context = (DirContextAdapter) ctx;
 			Person person = new Person();
 			// context.getAttributes() 通过属性赋值 TODO 减少代码
-			person.setCn(context.getStringAttribute("cn"));
-			person.setSn(context.getStringAttribute("sn"));
-			person.setUid(context.getStringAttribute("uid"));
-			person.setSid(context.getStringAttribute("o"));
-			person.setAccessToken(context.getStringAttribute("registeredAddress"));
+			person.setUsername(context.getStringAttribute(LDAP_ATTR_USERNAME));
+			person.setSurname(context.getStringAttribute(LDAP_ATTR_SURNAME));
+			person.setFirstname(context.getStringAttribute(LDAP_ATTR_COMMON_NAME));
+			person.setSocialId(context.getStringAttribute(LDAP_ATTR_SOCIAL_ID));
+			person.setSocialAccessToken(context.getStringAttribute(LDAP_ATTR_ACCESS_TOKEN));
 			// person.setUserPassword(context.getStringAttribute("userPassword"));
-			person.setDescription(context.getStringAttribute("description"));
-			person.setUserType(context.getStringAttribute("userType"));
-			person.setAge(context.getStringAttribute("age"));
+//			person.setDescription(context.getStringAttribute("description"));
+			person.setSocialType(context.getStringAttribute(LDAP_ATTR_SOCIAL_TYPE));
+//			person.setAge(context.getStringAttribute("age"));
 			person.setMail(context.getStringAttributes("mail"));
 			person.setMobile(context.getStringAttribute("mobile"));
 			return person;
@@ -163,19 +163,19 @@ public class LdapPersonDaoImpl implements LdapPersonDao {
 
 
 	
-	private	final static ContextMapper<Person> USER_CONTEXT_MAPPER=new AbstractContextMapper<Person>(){
+/*	private	final static ContextMapper<Person> USER_CONTEXT_MAPPER=new AbstractContextMapper<Person>(){
 
 		@Override
 		protected Person doMapFromContext(DirContextOperations context) {
 			Person ldapPerson =	new	Person();
-			ldapPerson.setCn(context.getStringAttribute("cn"));
-			ldapPerson.setSn(context.getStringAttribute("sn"));
-			ldapPerson.setSid(context.getStringAttribute("o"));
-			ldapPerson.setAccessToken(context.getStringAttribute("registeredAddress"));
+			ldapPerson.setUsername(context.getStringAttribute(LDAP_ATTR_USERNAME));
+			ldapPerson.setSurname(context.getStringAttribute(LDAP_ATTR_SURNAME));
+			ldapPerson.setSocialId(context.getStringAttribute(LDAP_ATTR_SOCIAL_ID));
+			ldapPerson.setSocialAccessToken(context.getStringAttribute(LDAP_ATTR_ACCESS_TOKEN));
 			ldapPerson.setDescription(context.getStringAttribute("description"));
 			ldapPerson.setMobile(context.getStringAttribute("mobile"));
 			return null;
-		}};
+		}};*/
 
 	
 	

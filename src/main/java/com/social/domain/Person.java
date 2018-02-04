@@ -2,48 +2,59 @@ package com.social.domain;
 
 public class Person {
 
-private String cn;
-private String uid;
-private String sn;
-private String sid;
-private String accessToken;
+private String username;
+private String firstname;
+private String surname;
+private String socialId;
+private String socialAccessToken;
+private String socialType;
 private String userPassword;
-private String userType;
 private String[] mail;
 private String mobile;
 private String sex;
 private String description;
 private String age;
-
-public String getCn() {
-	return cn;
+public String getUsername() {
+	return username;
 }
-public void setCn(String cn) {
-	this.cn = cn;
+public void setUsername(String username) {
+	this.username = username;
 }
-public String getUid() {
-	return uid;
+public String getFirstname() {
+	return firstname;
 }
-public void setUid(String uid) {
-	this.uid = uid;
+public void setFirstname(String firstname) {
+	this.firstname = firstname;
 }
-public String getSn() {
-	return sn;
+public String getSurname() {
+	return surname;
 }
-public void setSn(String sn) {
-	this.sn = sn;
+public void setSurname(String surname) {
+	this.surname = surname;
+}
+public String getSocialId() {
+	return socialId;
+}
+public void setSocialId(String socialId) {
+	this.socialId = socialId;
+}
+public String getSocialAccessToken() {
+	return socialAccessToken;
+}
+public void setSocialAccessToken(String socialAccessToken) {
+	this.socialAccessToken = socialAccessToken;
+}
+public String getSocialType() {
+	return socialType;
+}
+public void setSocialType(String socialType) {
+	this.socialType = socialType;
 }
 public String getUserPassword() {
 	return userPassword;
 }
 public void setUserPassword(String userPassword) {
 	this.userPassword = userPassword;
-}
-public String getUserType() {
-	return userType;
-}
-public void setUserType(String userType) {
-	this.userType = userType;
 }
 public String[] getMail() {
 	return mail;
@@ -75,18 +86,10 @@ public String getAge() {
 public void setAge(String age) {
 	this.age = age;
 }
-public String getAccessToken() {
-	return accessToken;
-}
-public void setAccessToken(String accessToken) {
-	this.accessToken = accessToken;
-}
-public String getSid() {
-	return sid;
-}
-public void setSid(String sid) {
-	this.sid = sid;
-}
+
+
+
+
 
 
 }

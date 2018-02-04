@@ -131,7 +131,6 @@ public class SocialCallBackController extends BaseController{
 			throw new Exception("Cannot get the access token due to appid is not matched.");
 		}
 		
-	
 		return "sso/loginAuthZ";
 	  }
 	

@@ -35,18 +35,18 @@
 <div class="container theme-showcase" role="main">
 	<div class="jumbotron">  
 		<h2>Oracle Access Management </h2>
-		<p> 第三方社交登录 </p> 
+		<p> 第三方社交登录</p> 
 	</div>
 	
 	<div class ="row">
 			 <div class="col-sm-6">
 			  		<div class="jumbotron">
-					  <form class="form-signin" action="/oam/server/auth_cred_submit" method="post">
+					  <form class="form-signin" action="http://oam.oracledemo.com:14100/oam/server/auth_cred_submit" method="post">
 				        <label for="inputText" class="sr-only">user name</label>
 				        <input type="text" name="username" class="form-control" placeholder="username" required autofocus>
 				        <label for="inputPassword" class="sr-only">Password</label>
 				        <input type="password" name ="password" id="inputPassword" class="form-control" placeholder="Password" required>
-						<input name="request_id" value="${param.reqId}" type="hidden">
+						<input name="request_id" value="${param.request_id}" type="hidden">
 				        <div class="checkbox">
 				          <label>
 				            <input type="checkbox" value="remember-me"> Remember me
@@ -60,23 +60,23 @@
 			<div class="col-sm-6">
 				<div class="jumbotron">
 					<p>
-							<a href="${ctx}/social/weibo" target="_top">
+							<a href="${ctx}/sso/weibo?request_id= ${param.request_id}" target="_top">
 								<button type="button" class="btn btn-lg btn-warning" style="width: 170px;">新浪微博登录</button>
 							</a>
 					</p>	
 					<p>
-							<a href="${ctx}/social/qq" target="_top">
+							<a href="${ctx}/sso/qq?request_id= ${param.request_id}" target="_top">
 								<button type="button" class="btn btn-lg btn-primary" style="width: 170px;">腾讯QQ登录</button>
 							</a>
 					</p>
 				
 					<p>
-							<a href="${ctx}/social/wechat" target="_top">
+							<a href="${ctx}/sso/wechat?request_id=${param.request_id}" target="_top">
 								<button type="button" class="btn btn-lg btn-success" style="width: 170px;">微信登录</button>
 							</a>
 					</p>
 					<p>
-							<a href="${ctx}/sso/alipay" target="_top">
+							<a href="${ctx}/sso/alipay?request_id= ${param.request_id}" target="_top">
 								<button type="button" class="btn btn-lg btn-info" style="width: 170px;">支付宝登录</button>
 							</a>
 					</p>
@@ -87,7 +87,7 @@
 			</div>
 		</div>
 </div>
-	<script type="text/javascript" src="${jshome}/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="${jshome}/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="${jshome}/bootstrap.min.js"></script>
 	<script type="text/javascript" src="${jshome}/bootstrap.js"></script>
 	<script type="text/javascript">

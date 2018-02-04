@@ -22,7 +22,7 @@ public interface LdapPersonDao {
 
 	boolean isUserCnExist(String cn);
 	
-	boolean isUserSocialIdExist(String socialId);
+	List findBySocialId(String socialId);
 	
 	Person findByPrimaryKey(String fullname); 
 

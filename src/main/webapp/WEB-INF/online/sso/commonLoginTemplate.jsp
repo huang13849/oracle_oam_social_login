@@ -38,24 +38,19 @@
 		
 		<div class="col-xs-12 col-sm-5 col-md-5">	
 			<img class="img-circle" src="${imghome}/alipay.jpg" />
-			<div class="list-group">
-				<div class="list-group-item active">
-	              <h4 class="list-group-item-heading">您的社交号为 ${param.source}</h4>
-	              <p class="list-group-item-text">${param.app_id} </p>
-           		 </div>
-			</div>
-			<div class="list-group">
-				<div class="list-group-item" >
-	              <h4 class="list-group-item-heading">自动注册企业账号并关联 </h4>
-	              <p class="list-group-item-text"></p>
-            	</div>
-			</div>
-			
+		
+			<div class="bs-example" data-example-id="simple-nav-stacked">
+			    <ul class="nav nav-pills nav-stacked col-md-offset-3">
+			      <li class="active" role="presentation"><a href="#">欢迎</a></li>
+			      <li role="presentation"><a href="#">您的社交号为 ${param.app_id}</a></li>
+			    </ul>
+			  </div>	
 		</div>
+		
 		<div class="col-xs-12 col-sm-1 col-md-1"></div>
-		<div class="col-xs-12 col-sm-5 col-md-5">
+		<div class="col-xs-12 col-sm-5 col-md-6">
 			 
-			<form role="form-horizontal" role="form" id="regform" name="regform" action="/oam/server/auth_cred_submit" method="post">
+			<form role="form-horizontal" role="form" class="hide" id="regform" name="regform" action="/oam/server/auth_cred_submit" method="post">
 			<!-- action="${ctx}/social/home  -->
 				<div class="page-header">
                     <h2 class="text-center text-warning">
@@ -63,12 +58,15 @@
                     </h2>
 				</div>
 				<div class="bs-example bs-example-tabs" data-example-id="togglable-tabs">
-					    <ul class="nav nav-tabs" id="myTabs" role="tablist">
-					      <li id="list1" class="active" role="presentation"><a id="home-tab" role="tab" aria-expanded="true" aria-controls="creat-acct" href="#creat-acct" data-toggle="tab">创建OAM账号</a></li>
-					      <li id="list2" class="active" role="presentation"><a id="profile-tab" role="tab" aria-expanded="false" aria-controls="link-acct" href="#link-acct" data-toggle="tab">绑定OAM账号</a></li>
-					    </ul>
+					    <div class ="bs-example">
+						    <ul class="nav nav-pills" id="myTabs" role="tablist">
+						      <li id="list1" role="presentation" ><a id="home-tab" role="tab" aria-expanded="true" aria-controls="creat-acct" href="#creat-acct" data-toggle="tab">创建OAM账号</a></li>
+						      <li id="list2" role="presentation"><a id="profile-tab" role="tab" aria-expanded="false" aria-controls="link-acct" href="#link-acct" data-toggle="tab">绑定OAM账号</a></li>
+						    </ul>
+					    </div>
+					    
 					    <div class="tab-conten" id="myTabContent">
-					      <div class="tab-pane fade active in" id="creat-acct" role="tabpanel" aria-labelledby="home-tab">
+					      <div class="tab-pane fade " id="creat-acct" role="tabpanel" aria-labelledby="home-tab">
        				        	
 									<div class="form-group has-feedback">
 										<label for="username">用户名</label>
@@ -153,41 +151,58 @@
 									</div>
 	
 					      </div>
-					      <div class="tab-pane fade" id="link-acct" role="tabpanel" aria-labelledby="profile-tab">
-         						<div class="form-group has-feedback">
-										<label for="username"></label>
-										<div class="input-group">
-											<span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-											<input class="form-control"  name="username" id="username-link" type="text" maxlength="20" placeholder="请输入用户名">
+					      
+				
+					      <div class="tab-pane fade form-group has-feedback" id="link-acct" role="tabpanel" aria-labelledby="profile-tab">
+									
+									<label for="surname">姓</label>
+									<div class="row">
+										<div class="col-xs-7">
+											<div class="input-group">
+													<span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+													<input class="form-control" name="firstname" id="surname-link" type="text" maxlength="20" placeholder="姓">
+											</div>
 										</div>
-										
-								
-								</div>
-								<div class="form-group has-feedback">
-										<label for="password"></label>
-										<div class="input-group">
-											<span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-											<input class="form-control" name="password" id="password-link" type="password" maxlength="20" placeholder="请输入密码">
+									</div>
+									<div class="row">
+										<div class="col-xs-7">
+											<label for="firstname">名</label>
+												<div class="input-group">
+													<span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+													<input class="form-control"  name="firstname" id="firstname-link" type="text" maxlength="20" placeholder="名">
+												</div>										
 										</div>
-								
-								</div>
-								<input name="request_id" value="${param.reqId}" type="hidden">
-								
-					      </div>
+									</div>
+									<div class="row">
+										<div class="col-xs-7">
+											<label for="username">用户名</label>
+											<div class="input-group">
+												<span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+												<input class="form-control"  name="username" id="username-link" type="text" maxlength="20" placeholder="用户名" disabled="true">
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-7">
+											<label for="mail">邮箱</label>
+											<div class="input-group">
+												<span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+												<input class="form-control" name="emai" id="mail-link" type="text" maxlength="20" placeholder="邮箱" disabled="true">
+											</div>
+										</div>
+									</div>
+								  </div>
+									
 				
 					    </div>
 					</div>
 	    
 					<hr/>
 				
-					<div class="form-group">
-							<input class="form-control btn btn-primary" id="submit" type="submit" value="确&nbsp;&nbsp;定&nbsp;&nbsp;">
-					</div>
-									
-					<div class="form-group">
-							<input class="form-control btn btn-danger" id="reset" type="reset" value="重&nbsp;&nbsp;置&nbsp;&nbsp;">
-					</div>
-				
+					<input name="request_id" value="${param.reqId}" type="hidden"/>
+																	
+					<button type="button" class="btn btn-primary btn-block" id="submit" type="submit" >关 联</button>
+					
 			</form>
 			
 

@@ -119,12 +119,12 @@ code += selectChar[charIndex];
 }
 return code;
 }
-var regUsername = /^[a-zA-Z_][a-zA-Z0-9_]{4,19}$/;
+var regUsername = /^[a-zA-Z_][a-zA-Z0-9_.]{4,19}$/;
 var regPasswordSpecial = /[~!@#%&=;':",./<>_\}\]\-\$\(\)\*\+\.\[\?\\\^\{\|]/;
 var regPasswordAlpha = /[a-zA-Z]/;
 var regPasswordNum = /[0-9]/;
 var password;
-var check = [false, false, false, false, false, false];
+var check = [false, false, false, false, false, false,false];
 
 //校验成功函数
 function success(Obj, counter) {
@@ -145,22 +145,41 @@ $('.tips').eq(counter).text(msg).show();
 check[counter] = false;
 }
 
-// 用户名匹配
+
 $('.container').find('input').eq(0).change(function() {
-
-
+	if($(this).val()!==null){
+		success($(this), 0);		
+	}else{
+		fail($(this), 0, '姓不能为空');		
+	}
+});
+$('.container').find('input').eq(1).change(function() {
+	if($(this).val()!==null){
+		success($(this), 1);		
+	}else{
+		fail($(this), 1, '名不能为空');		
+	}	
+});
+// 用户名匹配
+$('.container').find('input').eq(2).change(function() {
 if (regUsername.test($(this).val())) {
-success($(this), 0);
+success($(this), 2);
 } else if ($(this).val().length < 5) {
-fail($(this), 0, '用户名太短，不能少于5个字符');
+fail($(this), 2, '用户名太短，不能少于5个字符');
 } else {
-fail($(this), 0, '用户名只能为英文数字和下划线,且不能以数字开头')
+fail($(this), 2, '用户名只能为英文数字和下划线,且不能以数字开头')
 }
 
 });
 
-
-
+var regmail=/[a-zA-Z0-9_-]+$/
+$('.container').find('input').eq(3).change(function() {
+	if(regmail.test($(this).val())){
+		success($(this), 3);		
+	}else{
+		fail($(this), 3, '请勿包含其他字符');		
+	}	
+});
 // 密码匹配
 
 // 匹配字母、数字、特殊字符至少两种的函数
@@ -172,26 +191,25 @@ return a + b + c;
 
 }
 
-$('.container').find('input').eq(1).change(function() {
+$('.container').find('input').eq(4).change(function() {
 
 password = $(this).val();
-
 if ($(this).val().length < 8) {
-fail($(this), 1, '密码太短，不能少于8个字符');
+fail($(this), 4, '密码太短，不能少于8个字符');
 } else {
 
 
 if (atLeastTwo($(this).val()) < 2) {
-fail($(this), 1, '密码中至少包含字母、数字、特殊字符的两种')
+fail($(this), 4, '密码中至少包含字母、数字、特殊字符的两种')
 } else {
-success($(this), 1);
+success($(this), 4);
 }
 }
 });
 
 
 // 再次输入密码校验
-$('.container').find('input').eq(2).change(function() {
+/*$('.container').find('input').eq(2).change(function() {
 
 if ($(this).val() == password) {
 success($(this), 2);
@@ -206,36 +224,36 @@ fail($(this), 2, '两次输入的密码不一致');
 // 验证码
 $.idcode.setCode();
 
-$('.container').find('input').eq(3).change(function() {
+$('.container').find('input').eq(5).change(function() {
 var IsBy = $.idcode.validateCode();
 if (IsBy) {
 success($(this), 3);
 } else {
 fail($(this), 3, '验证码输入错误');
 }
-});
+});*/
 
 // 手机号码
 var regPhoneNum = /^[0-9]{11}$/
-$('.container').find('input').eq(4).change(function() {
+$('.container').find('input').eq(5).change(function() {
 if (regPhoneNum.test($(this).val())) {
-success($(this), 4);
+success($(this), 5);
 } else {
-fail($(this), 4, '手机号码只能为11位数字');
+fail($(this), 5, '手机号码只能为11位数字');
 }
 });
 
 //短信验证码
 var regMsg = /111111/;
-$('.container').find('input').eq(5).change(function() {
-if (check[4]) {
+$('.container').find('input').eq(6).change(function() {
+if (check[5]) {
 if (regMsg.test($(this).val())) {
-success($(this), 5);
+success($(this), 6);
 } else {
-fail($(this), 5, '短信验证码错误');
+fail($(this), 6, '短信验证码错误');
 }
 } else {
-$('.container').find('input').eq(4).parent().parent().removeClass('has-success').addClass('has-error');
+$('.container').find('input').eq(6).parent().parent().removeClass('has-success').addClass('has-error');
 }
 
 });
@@ -243,7 +261,7 @@ $('.container').find('input').eq(4).parent().parent().removeClass('has-success')
 
 $('#loadingButton').click(function() {
 
-if (check[4]) {
+if (check[5]) {
 $(this).removeClass('btn-primary').addClass('disabled');
 
 $(this).html('<span class="red">59</span> 秒后重新获取');
@@ -272,62 +290,115 @@ $('.container').find('input').eq(4).parent().parent().removeClass('has-success')
 
 })
 
-/*$('#submit').click(function(e) {
-if (!check.every(function(value) {
-	return value == true
-})) {
-e.preventDefault();
-for (key in check) {
-if (!check[key]) {
-$('.container').find('input').eq(key).parent().parent().removeClass('has-success').addClass('has-error')
-}
-}
-}
-});*/
 
-
-$(function() {
-	socialIDisExisted();
-/*		$.ajax({  
-	         type: "POST",  
-			 dataType: "json",//预期服务器返回的数据类型
-	       	 url:"../ldap/existSid",  
-	         data:{'sid':'123456789'},// 序列化表单值  getUrlPara(app_id)
-	         async: false,  
-	         error: function(request) {  
-	        	alert("Connection error"); 
-        	 },  
-	          success: function(data) {  
-				if(data){
-					socialIDisExisted();
-				}else{
-					socialIdisNotExisted();
-				}
-	     }  
-	   });  */  
-});
-/*alert("SUCCESS" + data /n+ result.resultCode);*/
-
-function socialIDisExisted(){
-	$('#list1').addClass("hide");
-	$('#list1').addClass("active");
-	$('#link-acct').addClass("active").addClass("in");
-	$('#creat-acct').addClass("hide");
-	
-	
+function socialIDisExisted(data){
+	$('#regform').removeClass("hide");
+	$('#username_link').attr("disabled",true).val(data.person.username);
+	$('#firstname_link').attr("disabled",true).val(data.person.firstname);
+	$('#surname_link').attr("disabled",true).val(data.person.surname);
+	$('#password_link').addClass("hide");
+	$('#idcode_link').addClass("hide");
+	$('#phoneNum_link').addClass("hide");
+	$('#mail_link').attr("disabled",true).val(data.person.mail);
+	$('#formtitle').html("请确认是否和企业账户关联:");
+	$('#create_submit').addClass("hide");
 }
 
 function socialIdisNotExisted(){
-	alert(window.location.href);
+	$('#regform').removeClass("hide");
+	$('#username_link').attr("disabled",false).val("").attr("placeholder","请输入用户名");
+	$('#firstname_link').attr("disabled",false).val("").attr("placeholder","请输入名");
+	$('#surname_link').attr("disabled",false).val("").attr("placeholder","请输入姓氏");
+	$('#mail_link').attr("disabled",false).val("").attr("placeholder","请输入邮箱");
+	$('#password').attr("disabled",false).val("").attr("placeholder","请输入密码");
+	$('#phoneNum').attr("disabled",false).val("").attr("placeholder","请输入手机号");
+	$('#idcode_btn').attr("disabled",false).val("").attr("placeholder","请输入短信验证码");
+	$('#associate_submit').addClass("hide");
+	
 }
 
+function noLDAPAlert(){
+	var alertwindow = ['<div class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title">Modal title</h4></div><div class="modal-body"><p>One fine body&hellip;</p></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div>']
+	
+	$('body').append(alertwindow.join(''));
+	
+	alert("LDAP is out of service.");
+}
 
-$('#submit').click(function(e) {
-	$('#regfrom').submit();
+$('#associate_submit').click(function(e) {
+	var params = {};
+	params.username_link = $("#username_link").val();
+	params.request_id = $("#request_id").val();
+	params.access_token = $("#social_access_token").val();
+	params.social_type = $("#social_type").val();
+	$.ajax({
+	    type:"post",
+	    url: "../ldap/updateSocialNumber",
+	    data: params,
+	    dataType:"json",
+	    async: false, 
+	    success:
+	        function(data){
+	    		jumpToNext();
+	        },
+	    error:
+	        function(data){
+	            alert("error");
+	        }
+	});
 });
 
-	
+$('#create_submit').click(function(e) {
+	if (!check.every(function(value) {
+		return value == true
+	})){
+		e.preventDefault();
+		var successNum = 0;
+		for (key in check) {
+			if (!check[key]) {
+				$('.container').find('input').eq(key).parent().parent().removeClass('has-success').addClass('has-error')
+			}
+		}
+	}else{
+		var params = {};
+		params.username_link = $("#username_link").val();
+		params.firstname_link = $("#firstname_link").val();//注意params.名称  名称与实体bean中名称一致
+		params.surname_link = $("#surname_link").val();
+		params.password_link = $("#password_link").val();
+		params.mail_link = $("#mail_link").val();
+		params.phoneNum_link=$('#phoneNum').val();
+		params.request_id = $("#request_id").val();
+		params.social_type = $("#social_type").val();
+		params.social_id = $("#social_id").val();
+		params.access_token = $("#social_access_token").val();
+		params.request_id = $("#request_id").val();
+		params.access_token = $("#social_access_token").val();
+		params.social_type = $("#social_type").val();
+		$.ajax({
+		    type:"post",
+		    url: "../ldap/addPerson",
+		    data: params,
+		    dataType:"json",
+		    async: false, 
+		    success:
+		        function(data){
+		    		if(data.result=="success"){
+		    			jumpToNext();
+		    		}
+		        },
+		    error:
+		        function(data){
+		            alert("addPerson error");
+		        }
+		});
+	}	
+});
 
+function jumpToNext(){
+		
+		$("#regform").submit();
+
+}
 
 $('#reset').click(function() {
 $('input').slice(0, 6).parent().parent().removeClass('has-error has-success');
@@ -336,3 +407,41 @@ $('.glyphicon-ok').hide();
 $('.glyphicon-remove').hide();
 check = [false, false, false, false, false, false, ];
 });
+
+function wechatTheme(){
+	$('#social_img').attr('src', '/social_login/images/weixin.jpg');
+	$('#associate_submit').removeClass("btn-primary").addClass("btn-success");
+	$('#create_submit').removeClass("btn-primary").addClass("btn-success");
+	$('#otp').removeClass("btn-primary").addClass("btn-success");
+	$('#createOrLinkTitle').removeClass("alert-info").addClass("alert-success");
+	$('#nav1').removeClass("active");
+
+}
+function weiboTheme(){
+	$('#social_img').attr('src', '/social_login/images/weibo.jpg');
+	$('#associate_submit').removeClass("btn-primary").addClass("btn-danger");
+	$('#create_submit').removeClass("btn-primary").addClass("btn-danger");
+	$('#otp').removeClass("btn-primary").addClass("btn-danger");
+	$('#createOrLinkTitle').removeClass("alert-info").addClass("alert-danger");
+	$('#nav1').removeClass("active");
+}
+function alipayTheme(){
+	$('#social_img').attr('src', '/social_login/images/alipay.jpg');
+}
+function qqTheme(){
+	$('#social_img').attr('src', '/social_login/images/qq.jpg');
+}
+function noneTheme(){
+	$('#LEFT_DIV').addClass("hide");
+}
+
+$(function(){
+
+})
+
+$(window).bind("load", function() {
+});	
+
+
+
+

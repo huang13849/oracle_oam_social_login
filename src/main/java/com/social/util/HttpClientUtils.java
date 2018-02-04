@@ -3,6 +3,8 @@ package com.social.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.Objects;
 
@@ -67,13 +69,17 @@ public class HttpClientUtils {
 		return responseContent;
 	}
 	
+	
+	public static String sendRequest(String url) throws Exception {
+		return sendRequest(url,"GET");
+	}
 	/**
 	 * send request
 	 * @param url
 	 * @return
 	 * @throws Exception
 	 */
-	public static String sendRequest(String url) throws Exception {
+	public static String sendRequest(String url,String method) throws Exception {
 		Objects.requireNonNull(url);
 		String response = "";
 		InputStream inPutStream = null;
@@ -81,7 +87,12 @@ public class HttpClientUtils {
 		try {
 			URL urlGet = new URL(url);
 			urlConnection = (HttpURLConnection) urlGet.openConnection();
-			urlConnection.setRequestMethod("GET");
+		
+/*			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("rn-proxy.oracle.com", 80));
+			urlConnection = (HttpURLConnection) urlGet.openConnection(proxy);*/
+			
+			urlConnection.setRequestMethod(method);
+			/*urlConnection.setRequestMethod("GET");*/
 			urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			urlConnection.setDoOutput(true);
 			urlConnection.setDoInput(true);
