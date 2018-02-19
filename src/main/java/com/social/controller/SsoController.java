@@ -59,6 +59,7 @@ public class SsoController extends BaseController{
 				AlipayUserInfoShareRequest requestUser = new AlipayUserInfoShareRequest();
 
 				AlipayUserInfoShareResponse userinfoShareResponse = alipayClient.execute(requestUser, oauthTokenResponse.getAccessToken());
+				display_name= userinfoShareResponse.getUserId();
 				System.out.println(userinfoShareResponse.getBody());
 				System.out.println("alipay UserId:" + userinfoShareResponse.getUserId());//用户支付宝ID
 				System.out.println("alipay UserType:" + userinfoShareResponse.getUserType() );//用户类型
@@ -213,10 +214,21 @@ public class SsoController extends BaseController{
 		
 	}
 	
+	
+	@RequestMapping("/submit")
+	public String submit(HttpSession session) throws IOException {
+		session.setAttribute("username",getRequest().getParameter("username"));
+		session.setAttribute("password",getRequest().getParameter("password"));
+		session.setAttribute("social_id",getRequest().getParameter("social_id"));  
+		session.setAttribute("social_type",getRequest().getParameter("social_type"));  
+		session.setAttribute("social_access_token",getRequest().getParameter("social_access_token"));
+		return "sso/submit";
+	}
+	
 	@RequestMapping("/alipay")
 	public void alipay() throws IOException {
 		getResponse().setContentType("text/html;charset=utf-8");
-		getResponse().sendRedirect(MessageFormat.format(AppConfig.getProperty("alipay_request_login_url"),AppConfig.getProperty("alipay_client_id"),AppConfig.getProperty("alipay_request_scope"),AppConfig.getProperty("alipay_redirect_uri"),AppConfig.getProperty("init"),getRequest().getParameter("request_id")));
+		getResponse().sendRedirect(MessageFormat.format(AppConfig.getProperty("alipay_request_login_url"),AppConfig.getProperty("alipay_client_id"),AppConfig.getProperty("alipay_request_scope"),AppConfig.getProperty("alipay_redirect_uri"),getRequest().getParameter("request_id")));
 
 	}
 	

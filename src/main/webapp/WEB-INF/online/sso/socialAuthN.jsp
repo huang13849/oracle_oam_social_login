@@ -1,23 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<c:set var="ctx" value="${request.contextPath}/social_login" />
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>授权登录</title>
-<meta name="title" content="网页集成(微博，QQ，微信)登录">
-<meta name="keywords" content="网页集成(微博，QQ，微信)登录">
-<meta name="description" content="">
-<meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1, minimum-scale=1, user-scalable=no">
-<meta name="renderer" content="webkit">
-<c:set var="csshome" value="${ctx}/css" />
-<c:set var="jshome" value="${ctx}/js" />
-<c:set var="imghome" value="${ctx}/images" />
-
-<link href="${csshome}/bootstrap.css" rel="stylesheet" type="text/css" />
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+<%@ include file = "./header.jsp" %>
 </head>
 <body>
 	<header class="intro-header"
@@ -180,23 +163,21 @@
 										</div>
 									</div>
 					      </div>
-					      
-				
-					   
+					      					   
 					</div>
 	    
 					<hr/>
 					
-					<input name="request_id" value="${param.state}" type="hidden"/>
-					<input name="username" id="username" type="hidden"/>
+     				<input name="request_id" value="${param.state}" type="hidden"/>
+					<input name="password_link" id="username_link" type="hidden"/>
 					
 					<input name="social_id" id="social_id" value="${social_id}" type="hidden"/>
 					<input name="social_access_token" id="social_access_token" value="${access_token}" type="hidden"/>
-					<input name="social_type" id="social_type" value="${social_type}" type="hidden"/>
-																	
-					<button type="button" class="btn btn-primary btn-block" id="associate_submit" type="associate_submit" >关 联</button>
-					<button type="button" class="btn btn-primary btn-block" id="create_submit" type="create_submit" >创 建</button>
-					
+					<input name="social_type" id="social_type" value="${social_type}" type="hidden"/> 
+				 															
+					<button type="button" class="btn btn-primary btn-block" id="associate_submit" name="associate_submit" type="associate_submit" >关 联</button>
+					<button type="button" class="btn btn-primary btn-block" id="create_submit"  name="create_submit" type="create_submit" >创 建</button>
+			
 					
 			</form>
 			
@@ -206,15 +187,12 @@
 	</div>
   </div>
   
-	<script type="text/javascript" src="${jshome}/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="${jshome}/bootstrap.min.js"></script>
-	<script type="text/javascript" src="${jshome}/bootstrap.js"></script>
 	<script type="text/javascript" src="${jshome}/loginAuthN.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function(){		
-		var socialid= $("#social_id").val();
-		var socialtype= $("#social_type").val();
-		if(socialtype=="wechat"){ 
+		var socialid= "${social_id}";
+		var socialtype=	"${social_type}";
+ 		if(socialtype=="wechat"){ 
 			wechatTheme();
 		}else if(socialtype=="alipay"){
 			alipayTheme();
@@ -225,25 +203,28 @@
 		}else{
 			noneTheme();
 		}
-		
-		var params = {};
- 		params.social_id = socialid;
 
-		$.ajax({  
+		var params = {};
+ 		params.social_id = socialid; 
+		 $.ajax({  
 			         type: "POST",  
 					 dataType: "json",//预期服务器返回的数据类型
 			       	 url:"../ldap/findBySid",  
 			         data:params,// 序列化表单值  getUrlPara(app_id)
 			         async: true,  		           
 			         success: function(data) {
-						 	if(data.person=='No_Sid_Posted'){
+				      		
+							$('#username').val(data.person.username);
+						 	
+							if(data.person=='No_Sid_Posted'){
 								alert("No sid posted.");
 							}else if(data.person=='Not_Found'){
 								socialIdisNotExisted();        		
 							}else{
 								socialIDisExisted(data);
-							} 
-					  },
+							}
+						 
+					 },
 					  error: function (XMLHttpRequest, textStatus, errorThrown) {
 		                     // 状态码
 		                    console.log(XMLHttpRequest.status);
@@ -253,10 +234,14 @@
 		                    console.log(textStatus);
 		                    
 		        	  	 	noLDAPAlert(); 
-		                }
-			 
-			});
- 
+		              },
+		              complete: function(jqXHR, textStatus){
+		       			  jqXHR.done(function(data, textStatus, jqXHR) {
+		            			
+		            	  });
+		              }
+			}); 
+		 
 	});
 	
 	</script>

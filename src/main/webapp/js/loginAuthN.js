@@ -119,7 +119,7 @@ code += selectChar[charIndex];
 }
 return code;
 }
-var regUsername = /^[a-zA-Z_][a-zA-Z0-9_.]{4,19}$/;
+var regUsername = /^[a-zA-Z_][a-zA-Z0-9.]{4,19}$/;
 var regPasswordSpecial = /[~!@#%&=;':",./<>_\}\]\-\$\(\)\*\+\.\[\?\\\^\{\|]/;
 var regPasswordAlpha = /[a-zA-Z]/;
 var regPasswordNum = /[0-9]/;
@@ -167,7 +167,7 @@ success($(this), 2);
 } else if ($(this).val().length < 5) {
 fail($(this), 2, '用户名太短，不能少于5个字符');
 } else {
-fail($(this), 2, '用户名只能为英文数字和下划线,且不能以数字开头')
+fail($(this), 2, '用户名只能为英文数字和.,且不能以数字开头')
 }
 
 });
@@ -328,9 +328,9 @@ function noLDAPAlert(){
 $('#associate_submit').click(function(e) {
 	var params = {};
 	params.username_link = $("#username_link").val();
-	params.request_id = $("#request_id").val();
-	params.access_token = $("#social_access_token").val();
-	params.social_type = $("#social_type").val();
+	params.request_id = "${param.state}";
+	params.access_token = "${access_token}";
+	params.social_type = "${social_type}";
 	$.ajax({
 	    type:"post",
 	    url: "../ldap/updateSocialNumber",
@@ -395,8 +395,38 @@ $('#create_submit').click(function(e) {
 });
 
 function jumpToNext(){
-		
+	/*	$("#password").val("Oracle123");
+		$("#username").val("slee");
 		$("#regform").submit();
+	*/
+	
+	var jumpUname=$("#username_link").val();
+	var jumpPass="welcome1";	
+	var social_id = $("#social_id").val();
+	var access_token = $("#social_access_token").val();
+	var social_type = $("#social_type").val();
+	var url ="http://oam.oracledemo.com/social_login/sso/submit?username="+ jumpUname + "&password="+ jumpPass+  "&social_id=" + social_id + "&social_access_token=" + access_token +"&social_type=" +social_type;
+	window.location.href= url;
+	
+/*	var params = {};
+	params.username="huangfra";
+	params.password="welcome1";
+	$.ajax({
+	    type:"post",
+	    url: "http://oam.oracledemo.com:14100/oam/server/auth_cred_submit",
+	    data: params,
+	    dataType:"json",
+	    async: false, 
+	    success:
+	        function(data){
+	    		alert(data);
+	    		window.location.href="http://oam.oracledemo.com/social_login/social/home";
+	        },
+	    error:
+	        function(data){
+	            alert("addPerson error");
+	        }
+	});*/
 
 }
 

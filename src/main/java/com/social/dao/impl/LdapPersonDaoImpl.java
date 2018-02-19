@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.naming.Name;
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapName;
 
@@ -151,7 +152,6 @@ public class LdapPersonDaoImpl implements LdapPersonDao {
 			person.setFirstname(context.getStringAttribute(LDAP_ATTR_COMMON_NAME));
 			person.setSocialId(context.getStringAttribute(LDAP_ATTR_SOCIAL_ID));
 			person.setSocialAccessToken(context.getStringAttribute(LDAP_ATTR_ACCESS_TOKEN));
-			// person.setUserPassword(context.getStringAttribute("userPassword"));
 //			person.setDescription(context.getStringAttribute("description"));
 			person.setSocialType(context.getStringAttribute(LDAP_ATTR_SOCIAL_TYPE));
 //			person.setAge(context.getStringAttribute("age"));
