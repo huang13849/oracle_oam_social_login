@@ -91,9 +91,7 @@
 	<script type="text/javascript" src="${jshome}/bootstrap.min.js"></script>
 	<script type="text/javascript" src="${jshome}/bootstrap.js"></script>
 	<script type="text/javascript">
-	$(document).ready(function(){
-		
-	});
+
 	</script>
 </body>
 </html>

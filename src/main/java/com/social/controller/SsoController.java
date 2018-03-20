@@ -3,12 +3,14 @@ package com.social.controller;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -18,6 +20,8 @@ import com.alipay.api.request.AlipaySystemOauthTokenRequest;
 import com.alipay.api.request.AlipayUserInfoShareRequest;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
+import com.social.dao.LdapPersonDao;
+import com.social.domain.Person;
 import com.social.util.AppConfig;
 import com.social.util.HttpClientUtils;
 
@@ -53,32 +57,38 @@ public class SsoController extends BaseController{
 				social_id = oauthTokenResponse.getAlipayUserId();
 				access_token=oauthTokenResponse.getAccessToken();
 				String social_source = oauthTokenResponse.getMsg();
-				System.out.println("access_token #### " + access_token);
-				System.out.println("Refresh Token #### " + oauthTokenResponse.getRefreshToken());				
+				log.info("<APIREQUEST>access_token #### " + access_token);
+				log.info("<APIREQUEST>Refresh Token #### " + oauthTokenResponse.getRefreshToken());				
 
 				AlipayUserInfoShareRequest requestUser = new AlipayUserInfoShareRequest();
 
 				AlipayUserInfoShareResponse userinfoShareResponse = alipayClient.execute(requestUser, oauthTokenResponse.getAccessToken());
 				display_name= userinfoShareResponse.getUserId();
-				System.out.println(userinfoShareResponse.getBody());
-				System.out.println("alipay UserId:" + userinfoShareResponse.getUserId());//用户支付宝ID
-				System.out.println("alipay UserType:" + userinfoShareResponse.getUserType() );//用户类型
-				System.out.println("alipay UserStatus:" + userinfoShareResponse.getUserStatus() );//用户账户动态
-				System.out.println("Email:" + userinfoShareResponse.getEmail() );//用户Email地址
-				System.out.println("IsCertified:" + userinfoShareResponse.getIsCertified() );//用户是否进行身份认证
-				System.out.println("IsStudentCertified:" + userinfoShareResponse.getIsStudentCertified() );//用户
+				log.info(userinfoShareResponse.getBody());
+				log.info("<APIREQUEST>alipay UserId:" + userinfoShareResponse.getUserId());//用户支付宝ID
+				log.info("<APIREQUEST>alipay UserType:" + userinfoShareResponse.getUserType() );//用户类型
+				log.info("<APIREQUEST>alipay UserStatus:" + userinfoShareResponse.getUserStatus() );//用户账户动态
+				log.info("<APIREQUEST>Email:" + userinfoShareResponse.getEmail() );//用户Email地址
+				log.info("<APIREQUEST>IsCertified:" + userinfoShareResponse.getIsCertified() );//用户是否进行身份认证
+				log.info("<APIREQUEST>IsStudentCertified:" + userinfoShareResponse.getIsStudentCertified() );//用户
+	
+				if(social_id.isEmpty()) {
+					log.error("<APIREQUEST> social_id is empty.");
+					return null;
+				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				log.error("Alipay API request error :" + e);
+				log.error("<APIREQUEST>Alipay API request error :" + e);
 			}
 	             
-		}		
+		}
+
 		 session.setAttribute("display_name",display_name);  
 		 session.setAttribute("social_id",social_id);  
 		 session.setAttribute("access_token",access_token);  
 		 session.setAttribute("social_type","alipay");  
 
-   		return "sso/socialAuthN";
+   		return findSidBySocialId(session);
 		
 	}
 	
@@ -102,19 +112,20 @@ public class SsoController extends BaseController{
 					String getUserInfoUrl = MessageFormat.format(AppConfig.getProperty("wechat_request_userInfo_url"), access_token, openId);
 					String userInfoResponse = HttpClientUtils.sendRequest(getUserInfoUrl);
 					JSONObject userInfoesult= JSONObject.fromObject(JSONObject.fromObject(response));
-					System.out.println(" Wechat userInfoesult ============ " + userInfoesult.toString());
+					log.info("<APIREQUEST> Wechat userInfoesult ============ " + userInfoesult.toString());
 					display_name=userInfoesult.getString("nickname");
 					session.setAttribute("headimgurl", userInfoesult.getString("headimgurl"));
 				} catch (Exception e) {
-					log.error("Wechat API request error :" + e);
+					log.error("<APIREQUEST> Wechat API request error :" + e);
 				}		    
 			}
-		 	session.setAttribute("display_name",display_name);  
-			session.setAttribute("social_id",social_id);  
+			
+		 	session.setAttribute("display_name",display_name);
+			session.setAttribute("social_id",social_id); 
 			session.setAttribute("access_token",access_token);  
 			session.setAttribute("social_type","wechat"); 
 	
-		return "sso/socialAuthN";
+			return findSidBySocialId(session);
 
 	}
 	
@@ -124,7 +135,7 @@ public class SsoController extends BaseController{
 		String access_token=new String();
 		String social_id=new String();
 		String auth_code = getRequest().getParameter("code");
-		String uid =new String();
+		String socialId =new String();
 		
 		if(auth_code!=null && !auth_code.trim().isEmpty()) {
 			try {
@@ -132,22 +143,22 @@ public class SsoController extends BaseController{
 				String oauthResponse = HttpClientUtils.sendRequest(oauthUrl,"POST");
 				JSONObject oauthResult=  JSONObject.fromObject(oauthResponse);
 				access_token = oauthResult.getString("access_token");
-				uid = oauthResult.getString("uid");
+				socialId = oauthResult.getString("uid");
 
-				String userInfoUrl = MessageFormat.format(AppConfig.getProperty("weibo_request_userInfo_url"), access_token, uid);
+				String userInfoUrl = MessageFormat.format(AppConfig.getProperty("weibo_request_userInfo_url"), access_token, socialId);
 				String userInfoResponse = HttpClientUtils.sendRequest(userInfoUrl);
 				JSONObject result=  JSONObject.fromObject(userInfoResponse);
-				log.info("WeiBo userInfo ========== " + result);
+				log.info("<APIREQUEST> WeiBo userInfo ========== " + result);
 			} catch (Exception e) {
-				log.error("Webo API request error :" + e);
+				log.error("<APIREQUEST> Webo API request error :" + e);
 			}
 		}
 		session.setAttribute("display_name",display_name);  
-		session.setAttribute("social_id",uid);  
+		session.setAttribute("social_id",socialId);  
 		session.setAttribute("access_token",access_token);  
 		session.setAttribute("social_type","weibo"); 
 		
-		return "sso/socialAuthN";
+		return findSidBySocialId(session);
 	}
 	
 	@RequestMapping("/qqAuthN")
@@ -174,10 +185,10 @@ public class SsoController extends BaseController{
 					JSONObject result=  JSONObject.fromObject(userInfoResponse);
 					display_name = result.getString("nickname");
 					
-					System.out.println(" qq userInfoesult ============ " + userInfoResponse.toString());
+					log.info("<APIREQUEST> qq userInfoesult ============ " + userInfoResponse.toString());
 					
 				} catch (Exception e) {
-					log.error("Wechat API request error :" + e);
+					log.error("<APIREQUEST> Wechat API request error :" + e);
 				}		    
 		} 
 			session.setAttribute("display_name",display_name);  
@@ -185,8 +196,7 @@ public class SsoController extends BaseController{
 			session.setAttribute("access_token",access_token);  
 			session.setAttribute("social_type","qq"); 
 	
-		
-		return "sso/socialAuthN";
+		return findSidBySocialId(session);
 
 	}
 
@@ -215,13 +225,67 @@ public class SsoController extends BaseController{
 	}
 	
 	
+	private String findSidBySocialId(HttpSession session) throws IOException {
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(new String[] {"spring-ldap.xml"});
+		List<Person> persons = null;
+		String social_id =session.getAttribute("social_id").toString();
+		LdapPersonDao ldapPersonDao = (LdapPersonDao) ctx.getBean("ldapPersonDao");
+		
+		if(social_id.isEmpty()) {
+			return "/social/home";
+		}
+		try {
+			persons = ldapPersonDao.findBySocialId(social_id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	
+		if(persons.size()>0) {
+			Person selectedPerson= persons.get(0);
+			session.setAttribute("username", selectedPerson.getUsername());
+			
+			return submit("1");
+			
+		}else {
+			return "/sso/socialAuthN";
+		}
+		
+	} 
+	@RequestMapping("/autoLogin")
+	public String autoLogin(HttpSession session) throws IOException {
+		
+		return submit("2");
+	}
+
+	
 	@RequestMapping("/submit")
-	public String submit(HttpSession session) throws IOException {
-		session.setAttribute("username",getRequest().getParameter("username"));
-		session.setAttribute("password",getRequest().getParameter("password"));
-		session.setAttribute("social_id",getRequest().getParameter("social_id"));  
-		session.setAttribute("social_type",getRequest().getParameter("social_type"));  
-		session.setAttribute("social_access_token",getRequest().getParameter("social_access_token"));
+	public String submit(String submitType) throws IOException {
+		
+		
+		if(submitType.equals("1")) {
+			log.info("<SUBMIT> username is : " + getRequest().getSession().getAttribute("username"));
+			log.info("<SUBMIT> password is: " + getRequest().getSession().getAttribute("password"));
+			log.info("<SUBMIT> social_id is: " + getRequest().getSession().getAttribute("social_id"));
+			log.info("<SUBMIT> social_type is: " + getRequest().getSession().getAttribute("social_type"));
+			log.info("<SUBMIT> social_access_token is: " + getRequest().getSession().getAttribute("social_access_token"));
+			
+		}else if (submitType.equals("2")) {
+			getRequest().getSession().setAttribute("username", "Temp0322");
+			getRequest().getSession().setAttribute("password", "welcome1");		
+		}else {
+			getRequest().getSession().setAttribute("username", getRequest().getParameter("username"));
+			getRequest().getSession().setAttribute("social_id", getRequest().getParameter("social_id"));
+			getRequest().getSession().setAttribute("social_type", getRequest().getParameter("social_type"));
+			getRequest().getSession().setAttribute("social_access_token", getRequest().getParameter("social_access_token"));
+			
+			log.info("<SUBMIT> username is : " +   getRequest().getParameter("username"));
+			log.info("<SUBMIT> password is: " + getRequest().getParameter("password"));
+			log.info("<SUBMIT> social_id is: " + getRequest().getParameter("social_id"));
+			log.info("<SUBMIT> social_type is: " + getRequest().getParameter("social_type"));
+			log.info("<SUBMIT> social_access_token is: " + getRequest().getParameter("social_access_token"));
+		}
 		return "sso/submit";
 	}
 	

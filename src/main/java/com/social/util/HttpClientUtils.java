@@ -88,7 +88,7 @@ public class HttpClientUtils {
 			URL urlGet = new URL(url);
 			urlConnection = (HttpURLConnection) urlGet.openConnection();
 		
-/*			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("rn-proxy.oracle.com", 80));
+		/*	Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("rn-proxy.oracle.com", 80));
 			urlConnection = (HttpURLConnection) urlGet.openConnection(proxy);*/
 			
 			urlConnection.setRequestMethod(method);

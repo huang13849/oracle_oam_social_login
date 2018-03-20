@@ -290,7 +290,7 @@ $('.container').find('input').eq(4).parent().parent().removeClass('has-success')
 
 })
 
-
+/*
 function socialIDisExisted(data){
 	$('#regform').removeClass("hide");
 	$('#username_link').attr("disabled",true).val(data.person.username);
@@ -302,7 +302,10 @@ function socialIDisExisted(data){
 	$('#mail_link').attr("disabled",true).val(data.person.mail);
 	$('#formtitle').html("请确认是否和企业账户关联:");
 	$('#create_submit').addClass("hide");
+	 popModal();
 }
+
+*/
 
 function socialIdisNotExisted(){
 	$('#regform').removeClass("hide");
@@ -325,7 +328,11 @@ function noLDAPAlert(){
 	alert("LDAP is out of service.");
 }
 
-$('#associate_submit').click(function(e) {
+/*$('#associate_submit').click(function(e) {
+	 associateSubmit();
+});
+
+function associateSubmit(){
 	var params = {};
 	params.username_link = $("#username_link").val();
 	params.request_id = "${param.state}";
@@ -345,8 +352,8 @@ $('#associate_submit').click(function(e) {
 	        function(data){
 	            alert("error");
 	        }
-	});
-});
+	});	
+}*/
 
 $('#create_submit').click(function(e) {
 	if (!check.every(function(value) {
@@ -383,7 +390,7 @@ $('#create_submit').click(function(e) {
 		    success:
 		        function(data){
 		    		if(data.result=="success"){
-		    			jumpToNext();
+		    			jumpToNext(data);
 		    		}
 		        },
 		    error:
@@ -394,39 +401,13 @@ $('#create_submit').click(function(e) {
 	}	
 });
 
-function jumpToNext(){
-	/*	$("#password").val("Oracle123");
-		$("#username").val("slee");
-		$("#regform").submit();
-	*/
-	
+function jumpToNext(data){
 	var jumpUname=$("#username_link").val();
-	var jumpPass="welcome1";	
 	var social_id = $("#social_id").val();
 	var access_token = $("#social_access_token").val();
 	var social_type = $("#social_type").val();
-	var url ="http://oam.oracledemo.com/social_login/sso/submit?username="+ jumpUname + "&password="+ jumpPass+  "&social_id=" + social_id + "&social_access_token=" + access_token +"&social_type=" +social_type;
+	var url ="/social_login/sso/submit?submitType=3&username="+ jumpUname  +  "&social_id=" + social_id + "&social_access_token=" + access_token +"&social_type=" +social_type;
 	window.location.href= url;
-	
-/*	var params = {};
-	params.username="huangfra";
-	params.password="welcome1";
-	$.ajax({
-	    type:"post",
-	    url: "http://oam.oracledemo.com:14100/oam/server/auth_cred_submit",
-	    data: params,
-	    dataType:"json",
-	    async: false, 
-	    success:
-	        function(data){
-	    		alert(data);
-	    		window.location.href="http://oam.oracledemo.com/social_login/social/home";
-	        },
-	    error:
-	        function(data){
-	            alert("addPerson error");
-	        }
-	});*/
 
 }
 
@@ -445,24 +426,37 @@ function wechatTheme(){
 	$('#otp').removeClass("btn-primary").addClass("btn-success");
 	$('#createOrLinkTitle').removeClass("alert-info").addClass("alert-success");
 	$('#nav1').removeClass("active");
-
+	$('#nav3').addClass("btn-success");
+	$('#nav4').addClass("btn-success");
 }
 function weiboTheme(){
 	$('#social_img').attr('src', '/social_login/images/weibo.jpg');
-	$('#associate_submit').removeClass("btn-primary").addClass("btn-danger");
-	$('#create_submit').removeClass("btn-primary").addClass("btn-danger");
-	$('#otp').removeClass("btn-primary").addClass("btn-danger");
-	$('#createOrLinkTitle').removeClass("alert-info").addClass("alert-danger");
+	$('#associate_submit').removeClass("btn-primary").addClass("btn-warning");
+	$('#create_submit').removeClass("btn-primary").addClass("btn-warning");
+	$('#otp').removeClass("btn-primary").addClass("btn-warning");
+	$('#createOrLinkTitle').removeClass("alert-info").addClass("btn-warning");
 	$('#nav1').removeClass("active");
+	$('#nav3').addClass("btn-warning");
+	$('#nav4').addClass("btn-warning");
 }
 function alipayTheme(){
 	$('#social_img').attr('src', '/social_login/images/alipay.jpg');
+	$('#nav3').addClass("btn-info");
+	$('#nav4').addClass("btn-info");
+	$('#otp').addClass("btn-info");
+	$('#createOrLinkTitle').addClass("btn-info");
+	$('#create_submit').addClass("btn-info");
 }
 function qqTheme(){
 	$('#social_img').attr('src', '/social_login/images/qq.jpg');
+	$('#nav3').addClass("btn-primary");
+	$('#nav4').addClass("btn-primary");
+	$('#create_submit').addClass("btn-primary");
 }
 function noneTheme(){
 	$('#LEFT_DIV').addClass("hide");
+	$('#nav3').addClass("hide");
+	$('#nav4').addClass("hide");
 }
 
 $(function(){

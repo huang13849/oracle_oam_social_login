@@ -33,6 +33,8 @@ public class LdapPersonDaoImpl implements LdapPersonDao {
 	private static final String LDAP_ATTR_COMMON_NAME = "cn";
 	private static final String LDAP_ATTR_USERNAME = "uid";
 	private static final String LDAP_ATTR_SOCIAL_ID = "st";
+	private static final String USER_PASSWORD = "userPassword";
+
 	@Autowired
 	private LdapTemplate ldapTemplate;
 	private static final Logger log = LoggerFactory.getLogger(LdapPersonDaoImpl.class);
@@ -128,7 +130,7 @@ public class LdapPersonDaoImpl implements LdapPersonDao {
 			context.setAttributeValue(LDAP_ATTR_COMMON_NAME, person.getFirstname() + " " + person.getSurname());
 			context.setAttributeValue(LDAP_ATTR_SURNAME, person.getSurname());
 			context.setAttributeValue(LDAP_ATTR_SOCIAL_ID, person.getSocialId());
-			context.setAttributeValue("userPassword", person.getUserPassword());
+			context.setAttributeValue(USER_PASSWORD, person.getUserPassword());
 			context.setAttributeValues("mail", person.getMail());
 			context.setAttributeValue("mobile", person.getMobile());
 			context.setAttributeValue("sex", person.getSex());
@@ -139,9 +141,10 @@ public class LdapPersonDaoImpl implements LdapPersonDao {
 	}
 
 	/**
-     * 查询不要返回密码信息
+     * 查询不返回密码信息
      */
 	private static class PersonContextMapper implements ContextMapper {
+
 
 		public Object mapFromContext(Object ctx) {
 			DirContextAdapter context = (DirContextAdapter) ctx;
@@ -152,7 +155,6 @@ public class LdapPersonDaoImpl implements LdapPersonDao {
 			person.setFirstname(context.getStringAttribute(LDAP_ATTR_COMMON_NAME));
 			person.setSocialId(context.getStringAttribute(LDAP_ATTR_SOCIAL_ID));
 			person.setSocialAccessToken(context.getStringAttribute(LDAP_ATTR_ACCESS_TOKEN));
-//			person.setDescription(context.getStringAttribute("description"));
 			person.setSocialType(context.getStringAttribute(LDAP_ATTR_SOCIAL_TYPE));
 //			person.setAge(context.getStringAttribute("age"));
 			person.setMail(context.getStringAttributes("mail"));

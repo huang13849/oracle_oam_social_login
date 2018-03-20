@@ -146,7 +146,8 @@ public class LdapOUDController {
 			ldapPerson.setFirstname(personVo.getFirstname_link());
 			ldapPerson.setSurname(personVo.getSurname_link());			
 			ldapPerson.setMail(new String[]{personVo.getMail_link()});			
-			ldapPerson.setMobile(personVo.getPhoneNum_link());									
+			ldapPerson.setMobile(personVo.getPhoneNum_link());
+			System.out.println("######### PW" + personVo.getPassword_link());
 			ldapPerson.setUserPassword(personVo.getPassword_link());			
 			ldapPerson.setSocialId(personVo.getSocial_id());
 			ldapPerson.setSocialAccessToken(personVo.getAccess_token());
@@ -155,4 +156,19 @@ public class LdapOUDController {
 		return ldapPerson;
 	}
 
+	
+	private Person mockPerson(String name) {;
+	Person ldapPerson = new Person();
+		ldapPerson.setUsername(name);
+		ldapPerson.setFirstname("fn");
+		ldapPerson.setSurname("sn");			
+		ldapPerson.setMail(new String[]{"email"});			
+		ldapPerson.setMobile("12223312");									
+		ldapPerson.setUserPassword("Welcome1");			
+		ldapPerson.setSocialId("sid");
+		ldapPerson.setSocialAccessToken("at");
+		ldapPerson.setSocialType("st");
+	
+	return ldapPerson;
+}
 }

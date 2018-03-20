@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ include file = "./header.jsp" %>
@@ -21,20 +22,34 @@
 		
 		<div class="col-xs-12 col-sm-5 col-md-5" id="LEFT_DIV">	
 				<img id="social_img" style="margin-top:50px" class="img-circle center-block" height="310" width="400" />
-			<div class=" bs-example" data-example-id="simple-nav-stacked">
-			    <ul class="nav nav-pills nav-stacked col-md-offset-3">
-			      <li id="nav1" class="active" role="presentation"><a href="#">欢迎<p class="text-right"> ${display_name}</p></a></li>
-			      <li role="presentation">
+			<div  data-example-id="simple-nav-stacked">
+			    <ul class="nav nav-pills nav-stacked col-md-offset-3 ">
+			      <li id="nav1" role="presentation" class="panel-group">
 			      	<a href="#">您的社交号为<p class="text-right"> ${social_id}</p></a>
 			      </li>
-			    </ul>
+			      <li id="nav2" class="panel-group" role="presentation">
+			      	<a href="#">欢迎！ <p class="text-right"> ${display_name} 请选择以下方式登录:</p></a>
+			      </li>
+			       <li class="panel-group" role="presentation">
+			      	<button id="nav3" type="button" class="btn btn-block" role="button" data-toggle="collapse" data-target="#regform" aria-expanded="false" aria-controls="regform">
+		  				新用户注册访问
+					</button>	
+			      </li>
+			      <li class="panel-group" role="presentation">
+			      	<button id="nav4" type="button" class="btn btn-block" onClick="javascript:top.location='/social_login/sso/autoLogin'">
+		  				免登录访问
+					</button>	
+			      </li>
+	
+			    </ul> 	
 			  </div>	
 		</div>
 		
+		
 		<div class="col-xs-12 col-sm-1 col-md-1"></div>
-		<div class="col-xs-12 col-sm-5 col-md-6">
+		<div class="col-xs-12 col-sm-5 col-md-6" >
 			 
-			<form role="form-horizontal" role="form" class="hide" id="regform" name="regform" action="http://iam12c.oracledemo.com:14100/oam/server/auth_cred_submit" method="post">
+			<form role="form-horizontal" role="form" class="hide collapse" id="regform" name="regform" action="http://iam12c.oracledemo.com:14100/oam/server/auth_cred_submit" method="post">
 			<!-- action="${ctx}/social/home  -->
 				<div class="page-header">
                     <h2 class="text-center text-warning">
@@ -93,11 +108,11 @@
 											<span class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
 											
 									</div> 		
-									<div class="form-group has-feedback" id="password_link">
+									<div class="form-group has-feedback">
 										<label for="password">密码</label>
 										<div class="input-group">
 											<span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-											<input class="form-control" name="password" id="password" type="password" maxlength="20" >
+											<input class="form-control" name="password_link" id="password_link" type="password" maxlength="20" placeholder="请输入密码" >
 										</div>
 										
 										<span class="tips" style="color:red;display: none;"></span>
@@ -175,8 +190,8 @@
 					<input name="social_access_token" id="social_access_token" value="${access_token}" type="hidden"/>
 					<input name="social_type" id="social_type" value="${social_type}" type="hidden"/> 
 				 															
-					<button type="button" class="btn btn-primary btn-block" id="associate_submit" name="associate_submit" type="associate_submit" >关 联</button>
-					<button type="button" class="btn btn-primary btn-block" id="create_submit"  name="create_submit" type="create_submit" >创 建</button>
+					<button type="button" class="btn btn-block" id="associate_submit" name="associate_submit" type="associate_submit" >关 联</button>
+					<button type="button" class="btn btn-block" id="create_submit"  name="create_submit" type="create_submit" >创 建</button>
 			
 					
 			</form>
@@ -192,7 +207,8 @@
 	$(document).ready(function(){		
 		var socialid= "${social_id}";
 		var socialtype=	"${social_type}";
- 		if(socialtype=="wechat"){ 
+
+		if(socialtype=="wechat"){ 
 			wechatTheme();
 		}else if(socialtype=="alipay"){
 			alipayTheme();
@@ -203,8 +219,8 @@
 		}else{
 			noneTheme();
 		}
-
-		var params = {};
+ 		socialIdisNotExisted();
+/* 		var params = {};
  		params.social_id = socialid; 
 		 $.ajax({  
 			         type: "POST",  
@@ -215,14 +231,14 @@
 			         success: function(data) {
 				      		
 							$('#username').val(data.person.username);
-						 	
-							if(data.person=='No_Sid_Posted'){
+							socialIdisNotExisted();
+						 	if(data.person=='No_Sid_Posted'){
 								alert("No sid posted.");
 							}else if(data.person=='Not_Found'){
 								socialIdisNotExisted();        		
 							}else{
 								socialIDisExisted(data);
-							}
+							} 
 						 
 					 },
 					  error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -240,7 +256,7 @@
 		            			
 		            	  });
 		              }
-			}); 
+			});  */
 		 
 	});
 	
